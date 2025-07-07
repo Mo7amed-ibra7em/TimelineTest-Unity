@@ -2,21 +2,22 @@ using UnityEngine;
 
 public class SimpleRotationSignal : MonoBehaviour
 {
-    bool rotating = false;
-
+    public Vector3 targetRotation = new Vector3(0, 90, 0);
+    public float rotationSpeed = 90f;
+    private bool rotating = false;
     void Update()
     {
         if (!rotating) return;
 
-        transform.rotation = Quaternion.RotateTowards(
-            transform.rotation,
-            Quaternion.Euler(0, 90, 0),
-            90f * Time.deltaTime);
+        Quaternion target = Quaternion.Euler(targetRotation);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, target, rotationSpeed * Time.deltaTime);
 
-        if (Quaternion.Angle(transform.rotation, Quaternion.Euler(0, 90, 0)) < 0.1f)
+        if (Quaternion.Angle(transform.rotation, target) < 0.1f)
+        {
+            transform.rotation = target;
             rotating = false;
+        }
     }
-
     public void ApplyRotation()
     {
         rotating = true;
